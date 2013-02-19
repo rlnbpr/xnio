@@ -34,7 +34,6 @@ class NioTcpServerHandle extends NioHandle {
     private int low;
     private int high;
     private boolean stopped;
-    private boolean resumed;
     private NioTcpServer server;
 
     NioTcpServerHandle(final NioTcpServer server, final SelectionKey key, final WorkerThread thread, final int low, final int high) {
@@ -66,12 +65,10 @@ class NioTcpServerHandle extends NioHandle {
     }
 
     void resume() {
-        resumed = true;
         if (! stopped) super.resume(SelectionKey.OP_ACCEPT);
     }
 
     void suspend() {
-        resumed = false;
         if (! stopped) super.suspend(SelectionKey.OP_ACCEPT);
     }
 
@@ -87,7 +84,7 @@ class NioTcpServerHandle extends NioHandle {
     void freeConnection() {
         if (count-- <= low && stopped) {
             stopped = false;
-            if (resumed) {
+            if (server.isAcceptsResumed()) {
                 super.resume(SelectionKey.OP_ACCEPT);
             }
         }
@@ -114,7 +111,7 @@ class NioTcpServerHandle extends NioHandle {
                 suspend();
             } else if (count <= low && stopped) {
                 stopped = false;
-                if (resumed) resume();
+                if (server.isAcceptsResumed()) resume();
             }
         } else {
             thread.execute(new Runnable() {
