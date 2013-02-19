@@ -391,12 +391,22 @@ final class NioTcpServer extends AbstractNioChannel<NioTcpServer> implements Acc
 
     private void doResume(final int op) {
         if (op == 0) {
-            for (NioTcpServerHandle handle : handles) {
-                handle.suspend(op);
+            for (final NioTcpServerHandle handle : handles) {
+                handle.getWorkerThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        handle.suspend(op);
+                    }
+                });
             }
         } else {
-            for (NioTcpServerHandle handle : handles) {
-                handle.resume(op);
+            for (final NioTcpServerHandle handle : handles) {
+                handle.getWorkerThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        handle.resume(op);
+                    }
+                });
             }
         }
     }
