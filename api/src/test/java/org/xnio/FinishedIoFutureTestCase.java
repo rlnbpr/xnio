@@ -19,19 +19,19 @@
 
 package org.xnio;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.xnio.IoFuture.Notifier;
 import org.xnio.IoFuture.Status;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Test for {@link FinishedIoFuture}.
- * 
+ *
  * @author <a href="mailto:flavia.rainone@jboss.com">Flavia Rainone</a>
  *
  */
@@ -39,7 +39,7 @@ public class FinishedIoFutureTestCase {
     @Test
     public void test() throws Exception {
         final FinishedIoFuture<String> future = new FinishedIoFuture<String>("future result");
-     
+
         final TestNotifier notifier = new TestNotifier();
         final Object attachment = new Object();
         future.addNotifier(notifier, attachment);
